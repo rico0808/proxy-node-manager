@@ -1,0 +1,52 @@
+{
+  "name": "midway-hooks-vue3-template",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node bootstrap",
+    "dev": "vite",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "tsc && vite build",
+    "build:server": "mw build",
+    "serve": "vite preview",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^6.0.1",
+    "@midwayjs/decorator": "^2.13.2",
+    "@midwayjs/hooks": "^2.3.0",
+    "@midwayjs/koa": "^2.13.4",
+    "@midwayjs/orm": "^2.13.4",
+    "ant-design-vue": "^2.2.8",
+    "axios": "^0.24.0",
+    "dayjs": "^1.10.7",
+    "jsonwebtoken": "^8.5.1",
+    "koa-bodyparser": "^4.3.0",
+    "lodash": "^4.17.21",
+    "mysql2": "^2.3.3-rc.0",
+    "typeorm": "^0.2.39",
+    "vue": "^3.2.21",
+    "vue-request": "^1.2.3",
+    "vue-router": "4",
+    "zod": "^3.11.6"
+  },
+  "devDependencies": {
+    "@midwayjs/cli": "^1.2.88",
+    "@midwayjs/cli-plugin-build": "^1.2.86",
+    "@midwayjs/vite-plugin-hooks": "^2.3.0",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "@types/jsonwebtoken": "^8.5.5",
+    "@types/koa-bodyparser": "^4.3.3",
+    "@types/lodash": "^4.14.176",
+    "@vitejs/plugin-vue": "^1.9.4",
+    "@vue/compiler-sfc": "^3.2.21",
+    "autoprefixer": "^9",
+    "postcss": "^7",
+    "sass": "^1.43.4",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.14",
+    "vite-plugin-components": "^0.13.3",
+    "vue-tsc": "^0.29.2"
+  }
+}
