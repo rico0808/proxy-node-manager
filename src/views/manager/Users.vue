@@ -1,6 +1,6 @@
 <template>
   <div class="pb-2">
-    <a-button @click="onCreateUser">添加用户</a-button>
+    <a-button type="primary" @click="onCreateUser">添加用户</a-button>
   </div>
 
   <a-table
