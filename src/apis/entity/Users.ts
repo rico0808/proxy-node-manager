@@ -1,5 +1,5 @@
 import { EntityModel } from "@midwayjs/orm";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @EntityModel("Users")
 export class Users {
@@ -23,4 +23,9 @@ export class Users {
   status: number;
   @Column({ type: "tinyint", default: 0, comment: "管理员" })
   isAdmin: number;
+
+  @CreateDateColumn({ type: "datetime" })
+  createAt: string;
+  @UpdateDateColumn({ type: "datetime" })
+  updateAt: string;
 }

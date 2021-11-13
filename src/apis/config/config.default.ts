@@ -5,7 +5,7 @@ export const orm = {
   username: "one",
   password: "mzSGX2tXEdLEyNZA",
   database: "one",
-  synchronize: false,
+  synchronize: true,
   logging: false,
   timezone: "+08:00",
 };

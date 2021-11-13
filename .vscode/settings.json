@@ -6,6 +6,7 @@
     "bodyparser",
     "compat",
     "datetime",
+    "ddns",
     "Heiti",
     "Hiragino",
     "loadbar",
