@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 
-export const formatTime = (time: string) => dayjs(time).format("YYYY-MM-DD");
+export const formatTime = (time: string, onTime = false) => {
+  return onTime ? dayjs(time).format("YYYY-MM-DD HH:mm:ss") : dayjs(time).format("YYYY-MM-DD");
+};
 
 export const valid = (schema: any, body: any, required = true) => {
   const valid = required ? schema.required().safeParse(body) : schema.safeParse(body);

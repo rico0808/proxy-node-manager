@@ -160,7 +160,7 @@
   // 点击删除用户
   const onDeleteUser = async (id: number) => {
     const { msg } = await delete_user({ id });
-    message.error(msg || "删除成功");
+    message.success(msg || "删除成功");
     reload();
   };
 
