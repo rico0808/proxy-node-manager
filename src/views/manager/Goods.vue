@@ -50,11 +50,10 @@
   import { computed, reactive, ref } from "@vue/reactivity";
   import { formatTime } from "../../utils/tools";
   import { nextTick } from "@vue/runtime-core";
-  import dayjs from "dayjs";
   import { message } from "ant-design-vue";
   import { z } from "zod";
-  import { EditUserSchema } from "../../apis/dto/UserDTO";
   import { create_goods, delete_goods, edit_goods, goods_list } from "../../apis/lambda/goods";
+  import { EditGoodsSchema } from "../../apis/dto/GoodsDTO";
 
   const fTime = formatTime;
   const columns = [
@@ -108,9 +107,9 @@
   };
 
   // 点击编辑
-  const onEditNode = (user: z.infer<typeof EditUserSchema>) => {
+  const onEditNode = (goods: z.infer<typeof EditGoodsSchema>) => {
     state.isEdit = state.visible = true;
-    nextTick(() => Object.assign(formData.value, user, { expire: dayjs(user.expire).format("YYYY-MM-DD") }));
+    nextTick(() => Object.assign(formData.value, goods));
   };
 
   // 点击删除
