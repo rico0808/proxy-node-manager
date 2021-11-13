@@ -31,12 +31,11 @@ export const user_list = async ({ page = 1, size = 15 }) => {
 // 新增用户
 export const create_user = async (body: any) => {
   const data: z.infer<typeof CreateUserSchema> = valid(CreateUserSchema, body);
-  let user;
-  user = await mUser().findOne({ where: { tb: data.tb } });
-  if (user) throw [400, "淘宝账号已经存在"];
-  user = await mUser().findOne({ where: { account: data.account } });
-  if (user) throw [400, "连接账号已经存在"];
-  user = new Users();
+  const tbExist = await mUser().findOne({ where: { tb: data.tb } });
+  if (tbExist) throw [400, "淘宝账号已经存在"];
+  const AccountExist = await mUser().findOne({ where: { account: data.account } });
+  if (AccountExist) throw [400, "连接账号已经存在"];
+  const user = new Users();
   user.tb = data.account;
   user.account = data.account;
   user.passwd = data.passwd;

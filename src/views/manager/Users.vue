@@ -79,10 +79,9 @@
 <script setup lang="ts">
   import { create_user, delete_user, edit_user, user_list } from "../../apis/lambda/users";
   import { usePagination } from "vue-request";
-  import { computed, reactive, ref } from "@vue/reactivity";
+  import { computed, reactive, Ref, ref } from "@vue/reactivity";
   import { formatTime } from "../../utils/tools";
   import { nextTick } from "@vue/runtime-core";
-  import { useFilterData } from "../../hooks/useFilterData";
   import dayjs from "dayjs";
   import { message } from "ant-design-vue";
   import { z } from "zod";
@@ -109,7 +108,7 @@
   const modelTitle = computed(() => (state.isEdit ? "编辑用户" : "添加用户"));
 
   const formRef = ref();
-  const { baseFm, form: formData } = useFilterData({
+  const baseFm = {
     tb: "",
     account: "",
     passwd: "",
@@ -118,7 +117,8 @@
     expire: dayjs().format("YYYY-MM-DD"),
     useTest: 0,
     status: 1,
-  });
+  };
+  const formData = ref(Object.assign({}, baseFm));
 
   const rules = {
     tb: [{ required: true, message: "请输入淘宝账号", trigger: "blur" }],
