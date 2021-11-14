@@ -56,3 +56,6 @@ export const edit_goods = async (body: any) => {
   await mGoods().save(goods);
   return { msg: "编辑商品成功" };
 };
+
+// 全部商品无分页
+export const goods_list_nopage = async () => await mGoods().find();

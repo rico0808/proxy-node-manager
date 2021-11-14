@@ -19,10 +19,10 @@ export const useRandom = (min: number, max: number) => {
 
 export const useStaticTime = (time = "") => {
   if (time) {
-    const date = `${dayjs(time).format("YYYY-MM-DD")} 08:00:00`;
+    const date = `${dayjs(time).format("YYYY-MM-DD")} 23:59:59`;
     return dayjs(date).toISOString();
   } else {
-    const date = `${dayjs().format("YYYY-MM-DD")} 08:00:00`;
+    const date = `${dayjs().format("YYYY-MM-DD")} 23:59:59`;
     return dayjs(date).toISOString();
   }
 };

@@ -3,9 +3,11 @@ import { Context } from "@midwayjs/koa";
 import { useEntityModel } from "@midwayjs/orm";
 import { z } from "zod";
 import { valid } from "../../utils/tools";
-import { CreateUserSchema, DelUserSchema, EditUserSchema } from "../dto/UserDTO";
+import { CreateUserSchema, DelUserSchema, EditUserSchema, FindUserSchema, UserAddGoodsSchema } from "../dto/UserDTO";
+import { Goods } from "../entity/Goods";
 import { Users } from "../entity/Users";
 import { useFindCount } from "../hooks/Pagination";
+import { useGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
 
 export const config: ApiConfig = {
@@ -14,6 +16,7 @@ export const config: ApiConfig = {
 
 const ctx = () => useContext<Context>();
 const mUser = () => useEntityModel(Users);
+const mGoods = () => useEntityModel(Goods);
 
 // id查找用户
 const _findUserById = async (id: number) => {
@@ -66,4 +69,63 @@ export const edit_user = async (body: any) => {
   user.status = data.status;
   await mUser().save(user);
   return { msg: "编辑用户成功" };
+};
+
+// 查找用户
+export const find_user = async (body: any) => {
+  const data: z.infer<typeof FindUserSchema> = valid(FindUserSchema, body);
+  const user = await mUser().findOne({
+    where: [
+      { account: data.account, isAdmin: 0 },
+      { tb: data.account, isAdmin: 0 },
+    ],
+  });
+  if (!user) throw [400, "用户不存在"];
+  return user;
+};
+
+// 重置试用
+export const reset_user_test = async (body: any) => {
+  const data: z.infer<typeof DelUserSchema> = valid(DelUserSchema, body);
+  const user = await _findUserById(data.id);
+  user.useTest = 0;
+  await mUser().save(user);
+  return { msg: "重置试用成功", useTest: user.useTest };
+};
+
+// 流量清空
+export const reset_user_used = async (body: any) => {
+  const data: z.infer<typeof DelUserSchema> = valid(DelUserSchema, body);
+  const user = await _findUserById(data.id);
+  user.used = 0;
+  await mUser().save(user);
+  return { msg: "清空流量成功", used: user.used };
+};
+
+// 封禁账户
+export const block_user = async (body: any) => {
+  const data: z.infer<typeof DelUserSchema> = valid(DelUserSchema, body);
+  const user = await _findUserById(data.id);
+  user.status = 0;
+  await mUser().save(user);
+  return { msg: "封禁账户成功", status: 0 };
+};
+
+// 启用账户
+export const unlock_user = async (body: any) => {
+  const data: z.infer<typeof DelUserSchema> = valid(DelUserSchema, body);
+  const user = await _findUserById(data.id);
+  user.status = 1;
+  await mUser().save(user);
+  return { msg: "启用账户成功", status: 1 };
+};
+
+// 商品补单
+export const user_add_goods = async (body: any) => {
+  const data: z.infer<typeof UserAddGoodsSchema> = valid(UserAddGoodsSchema, body);
+  const user = await _findUserById(data.id);
+  const goods = await mGoods().findOne({ where: { sku: data.sku } });
+  if (!goods) throw [400, "商品不存在"];
+  await useGoods([{ sku: goods.sku, num: 1 }], user);
+  return { msg: "商品补单成功" };
 };
