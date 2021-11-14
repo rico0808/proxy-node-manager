@@ -25,5 +25,6 @@ export const user_login = async (body: z.infer<typeof LoginSchema>) => {
 export const user_info = withController({ middleware: [AuthHandle] }, async () => {
   const { session } = ctx();
   const user = await mUser().findOne({ where: { id: session.id } });
+  if (!user) throw [401, "User Session Expire"];
   return omit(user, ["passwd"]);
 });

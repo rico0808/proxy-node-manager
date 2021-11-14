@@ -34,10 +34,16 @@
         <a-input v-model:value.trim="formData.sku" placeholder="请输入商品SKU" />
       </a-form-item>
       <a-form-item label="预设流量" name="traffic">
-        <a-input v-model:value.trim="formData.traffic" placeholder="请输入预设流量" />
+        <div class="flex items-center">
+          <a-input-number v-model:value.trim="formData.traffic" :min="0" class="w-full" placeholder="请输入预设流量" />
+          <span class="ml-2">GB</span>
+        </div>
       </a-form-item>
       <a-form-item label="有效天数" name="days">
-        <a-input v-model:value.trim="formData.days" placeholder="请输入有效天数" />
+        <div class="flex items-center">
+          <a-input-number v-model:value.trim="formData.days" :min="0" class="w-full" placeholder="请输入有效天数" />
+          <span class="ml-2">天</span>
+        </div>
       </a-form-item>
       <a-form-item v-if="state.isEdit" label="商品状态" name="status">
         <a-radio-group v-model:value="formData.status">
@@ -82,14 +88,12 @@
   const modelTitle = computed(() => (state.isEdit ? "编辑节点" : "添加节点"));
 
   const formRef = ref();
-  const baseFm = { name: "", sku: "", traffic: "", days: "", status: 1 };
+  const baseFm = { name: "", sku: "", traffic: 0, days: 0, status: 1 };
   const formData = ref(Object.assign({}, baseFm));
 
   const rules = {
     name: [{ required: true, message: "请输入商品名字", trigger: "blur" }],
     sku: [{ required: true, message: "请输入商品SKU", trigger: "blur" }],
-    traffic: [{ required: true, message: "请输入预设流量", trigger: "blur" }],
-    days: [{ required: true, message: "请输入有效天数", trigger: "blur" }],
   };
 
   // 请求

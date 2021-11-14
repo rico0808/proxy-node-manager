@@ -51,7 +51,7 @@
   import Card from "../../../component/Card.vue";
 
   const state = reactive({
-    tid: "2249089164929080562",
+    tid: "",
     order: ref<z.infer<typeof OrderSchema>>(null),
   });
 

@@ -34,6 +34,8 @@ export const create_goods = async (body: any) => {
   const goods = new Goods();
   goods.name = data.name;
   goods.sku = data.sku;
+  goods.traffic = data.traffic;
+  goods.days = data.days;
   await mGoods().save(goods);
   return { msg: "添加商品成功" };
 };
@@ -52,6 +54,8 @@ export const edit_goods = async (body: any) => {
   const goods = await _findGoodsById(data.id);
   goods.name = data.name;
   goods.sku = data.sku;
+  goods.traffic = data.traffic;
+  goods.days = data.days;
   goods.status = data.status;
   await mGoods().save(goods);
   return { msg: "编辑商品成功" };

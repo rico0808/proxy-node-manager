@@ -102,7 +102,7 @@
   const unlockUser = unlock_user;
 
   const state = reactive({
-    account: "080562",
+    account: "",
     user: ref<z.infer<typeof UserSchema>>(null),
   });
 
