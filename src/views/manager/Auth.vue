@@ -7,7 +7,7 @@
           <a-input v-model:value="formData.account" placeholder="登录账号" />
         </a-form-item>
         <a-form-item name="passwd">
-          <a-input type="password" v-model:value="formData.passwd" placeholder="登录密码" />
+          <a-input-password type="password" v-model:value="formData.passwd" placeholder="登录密码" />
         </a-form-item>
         <a-button type="primary" block size="large" @click="handleSubmit">登 录</a-button>
       </a-form>

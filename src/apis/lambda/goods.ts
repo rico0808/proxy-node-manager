@@ -14,7 +14,7 @@ const ctx = () => useContext<Context>();
 const mGoods = () => useEntityModel(Goods);
 
 // id查找用户
-const _findNodeById = async (id: number) => {
+const _findGoodsById = async (id: number) => {
   const user = await mGoods().findOne({ where: { id } });
   if (!user) throw [401, "节点不存在"];
   return user;
@@ -41,7 +41,7 @@ export const create_goods = async (body: any) => {
 // 删除商品
 export const delete_goods = async (body: any) => {
   const data: z.infer<typeof DelGoodsSchema> = valid(DelGoodsSchema, body);
-  const goods = await _findNodeById(data.id);
+  const goods = await _findGoodsById(data.id);
   await mGoods().remove(goods);
   return { msg: "删除商品成功" };
 };
@@ -49,7 +49,7 @@ export const delete_goods = async (body: any) => {
 // 编辑商品
 export const edit_goods = async (body: any) => {
   const data: z.infer<typeof EditGoodsSchema> = valid(EditGoodsSchema, body);
-  const goods = await _findNodeById(data.id);
+  const goods = await _findGoodsById(data.id);
   goods.name = data.name;
   goods.sku = data.sku;
   goods.status = data.status;

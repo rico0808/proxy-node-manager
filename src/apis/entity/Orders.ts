@@ -31,7 +31,7 @@ export class Orders {
   product: string;
 
   @CreateDateColumn({ type: "datetime" }) // 创建时间
-  createAt: Date;
+  createAt: string;
   @UpdateDateColumn({ type: "datetime" }) // 更新时间
-  updateAt: Date;
+  updateAt: string;
 }

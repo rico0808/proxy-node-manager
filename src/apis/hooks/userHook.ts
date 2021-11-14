@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { Goods } from "../entity/Goods";
 import { Users } from "../entity/Users";
 import { IF_UseProductData } from "../interface";
+import { useStaticTime } from "./agisoHook";
 
 const mGoods = () => useEntityModel(Goods);
 const mUsers = () => useEntityModel(Users);
@@ -18,9 +19,9 @@ export const useGoods = async (data: IF_UseProductData[], user: Users) => {
     const days = prod.days * num;
     user.traffic += traffic;
     if (dayjs().isAfter(user.expire)) {
-      user.expire = dayjs().add(days, "day").toISOString();
+      user.expire = useStaticTime(dayjs().add(days, "day").toISOString());
     } else {
-      user.expire = dayjs(user.expire).add(days, "day").toISOString();
+      user.expire = useStaticTime(dayjs(user.expire).add(days, "day").toISOString());
     }
 
     // 销量增加
