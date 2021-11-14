@@ -5,6 +5,11 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
+      path: "/",
+      component: () => import("../views/public/User.vue"),
+      meta: { unAuth: true, public: true },
+    },
+    {
       path: "/manager/auth",
       component: () => import("../views/manager/Auth.vue"),
       meta: { unAuth: true },
@@ -25,6 +30,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = _ls.Get("token");
+  if (to.meta.unAuth && to.meta.public) return next();
   if (to.meta.unAuth) {
     if (token) return next("/manager");
     return next();
