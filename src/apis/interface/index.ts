@@ -41,3 +41,12 @@ export interface IF_UseProductData {
   sku: string;
   num: number;
 }
+
+// 运营总览
+export interface IF_IncomeAbout {
+  order: number;
+  orderPayment: number;
+  refund: number;
+  refundPayment: number;
+  user: number;
+}

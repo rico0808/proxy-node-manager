@@ -19,7 +19,7 @@ export class Orders {
   tid: string;
 
   @Column({ type: "decimal", default: 0.0, scale: 2, comment: "付款金额" })
-  payment: number;
+  payment: string;
 
   @Column({ type: "tinyint", default: 0, comment: "订单状态 0未知 1已付款 2已发货 -1退款" })
   status: number;
