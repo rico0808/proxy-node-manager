@@ -12,6 +12,7 @@
     @change="onTableChange"
   >
     <template #traffic="{ record }">{{ record.traffic }} GB</template>
+    <template #days="{ record }">{{ record.days }} 天</template>
     <template #updateAt="{ record }">{{ fTime(record.updateAt, true) }}</template>
     <template #status="{ record }">
       <a-tag class="m-0" :color="record.status ? 'success' : 'error'">{{ record.status ? "售卖中" : "已下架" }}</a-tag>
@@ -26,11 +27,17 @@
 
   <a-modal :title="modelTitle" :visible="state.visible" @cancel="onModelClose" :maskClosable="false" width="400px">
     <a-form ref="formRef" :model="formData" :rules="rules" hideRequiredMark>
-      <a-form-item label="节点名字" name="name">
+      <a-form-item label="商品名称" name="name">
         <a-input v-model:value.trim="formData.name" placeholder="请输入节点名称" />
       </a-form-item>
-      <a-form-item label="节点地址" name="sku">
+      <a-form-item label="商品SKU" name="sku">
         <a-input v-model:value.trim="formData.sku" placeholder="请输入商品SKU" />
+      </a-form-item>
+      <a-form-item label="预设流量" name="traffic">
+        <a-input v-model:value.trim="formData.traffic" placeholder="请输入预设流量" />
+      </a-form-item>
+      <a-form-item label="有效天数" name="days">
+        <a-input v-model:value.trim="formData.days" placeholder="请输入有效天数" />
       </a-form-item>
       <a-form-item v-if="state.isEdit" label="商品状态" name="status">
         <a-radio-group v-model:value="formData.status">
@@ -60,6 +67,8 @@
     { title: "#", dataIndex: "id" },
     { title: "商品名称", dataIndex: "name" },
     { title: "SKU编号", dataIndex: "sku" },
+    { title: "预设流量", slots: { customRender: "traffic" }, align: "center" },
+    { title: "有效天数", slots: { customRender: "days" }, align: "center" },
     { title: "销量", dataIndex: "sales", align: "center" },
     { title: "状态", slots: { customRender: "status" }, align: "center" },
     { title: "操作项", slots: { customRender: "actions" }, width: "140px", align: "center" },
@@ -73,13 +82,14 @@
   const modelTitle = computed(() => (state.isEdit ? "编辑节点" : "添加节点"));
 
   const formRef = ref();
-  const baseFm = { name: "", sku: "", status: 1 };
+  const baseFm = { name: "", sku: "", traffic: "", days: "", status: 1 };
   const formData = ref(Object.assign({}, baseFm));
 
   const rules = {
-    name: [{ required: true, message: "请输入节点名字", trigger: "blur" }],
-    ddns: [{ required: true, message: "请输入节点地址", trigger: "blur" }],
-    port: [{ required: true, message: "请输入连接端口", trigger: "blur" }],
+    name: [{ required: true, message: "请输入商品名字", trigger: "blur" }],
+    sku: [{ required: true, message: "请输入商品SKU", trigger: "blur" }],
+    traffic: [{ required: true, message: "请输入预设流量", trigger: "blur" }],
+    days: [{ required: true, message: "请输入有效天数", trigger: "blur" }],
   };
 
   // 请求

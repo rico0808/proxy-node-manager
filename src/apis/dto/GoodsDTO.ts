@@ -3,6 +3,8 @@ import { z } from "zod";
 export const CreateGoodsSchema = z.object({
   name: z.string().nonempty(),
   sku: z.string().nonempty(),
+  traffic: z.string().nonempty(),
+  days: z.string().nonempty(),
 });
 
 export const DelGoodsSchema = z.object({
@@ -13,5 +15,7 @@ export const EditGoodsSchema = z.object({
   id: z.number(),
   name: z.string().nonempty(),
   sku: z.string().nonempty(),
+  traffic: z.string().nonempty(),
+  days: z.string().nonempty(),
   status: z.number(),
 });
