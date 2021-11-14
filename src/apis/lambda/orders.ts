@@ -1,3 +1,4 @@
+import { ApiConfig } from "@midwayjs/hooks-core";
 import { useEntityModel } from "@midwayjs/orm";
 import dayjs from "dayjs";
 import { z } from "zod";
@@ -8,6 +9,9 @@ import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
 import { useStaticTime } from "../hooks/agisoHook";
 import { useFindCount } from "../hooks/Pagination";
+import { AuthHandle } from "../middleware/AuthHandle";
+
+export const config: ApiConfig = { middleware: [AuthHandle] };
 
 const mOrders = () => useEntityModel(Orders);
 const mUsers = () => useEntityModel(Users);

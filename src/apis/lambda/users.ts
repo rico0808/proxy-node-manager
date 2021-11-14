@@ -10,9 +10,7 @@ import { useFindCount } from "../hooks/Pagination";
 import { useGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
 
-export const config: ApiConfig = {
-  middleware: [AuthHandle],
-};
+export const config: ApiConfig = { middleware: [AuthHandle] };
 
 const ctx = () => useContext<Context>();
 const mUser = () => useEntityModel(Users);
