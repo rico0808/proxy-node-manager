@@ -52,6 +52,7 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
 
     // 获取负载最小节点
     const node = await mNodes().findOne({ order: { online: "ASC" } });
+    if (!node) throw [500, `未找到任何可用节点，订单编号：${data.TidStr}`];
 
     // 获取订单产品
     const prods = data.Orders.map((item) => ({ sku: item.OuterSkuId || item.OuterIid, num: item.Num }));
