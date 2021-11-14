@@ -55,6 +55,7 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
 
     // 获取订单产品
     const prods = data.Orders.map((item) => ({ sku: item.OuterSkuId || item.OuterIid, num: item.Num }));
+    if (!prods) return _sendAliwwMsg(false, `订单号：${data.TidStr}\n亲亲，该产品未在库存中找到，请联系客服手动补货。`);
 
     // 判断是否试用
     const useTest = await prods.filter((item) => item.sku === config().testGoods);
