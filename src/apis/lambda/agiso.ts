@@ -7,10 +7,10 @@ import { useEntityModel } from "@midwayjs/orm";
 import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
 import { Nodes } from "../entity/Nodes";
-import { formatTime, valid } from "../../utils/tools";
 import { useGoods } from "../hooks/userHook";
 import { AgisoBodySchema, AgisoQuerySchema } from "../dto/AgisoDTO";
 import { z } from "zod";
+import { formatTime, valid } from "../utils/tools";
 
 const ctx = () => useContext<Context>();
 const mOrder = () => useEntityModel(Orders);
@@ -84,7 +84,7 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
       order.uid = user.id;
       order.source = "TB";
       order.tb = data.BuyerNick;
-      order.payment = parseFloat(data.Payment);
+      order.payment = data.Payment;
       order.product = JSON.stringify(data.Orders);
       order.status = 1;
       order.buyTime = data.Created;

@@ -2,11 +2,11 @@ import { ApiConfig, useContext } from "@midwayjs/hooks-core";
 import { Context } from "@midwayjs/koa";
 import { useEntityModel } from "@midwayjs/orm";
 import { z } from "zod";
-import { valid } from "../../utils/tools";
 import { CreateGoodsSchema, DelGoodsSchema, EditGoodsSchema } from "../dto/GoodsDTO";
 import { Goods } from "../entity/Goods";
 import { useFindCount } from "../hooks/Pagination";
 import { AuthHandle } from "../middleware/AuthHandle";
+import { valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 

@@ -2,13 +2,13 @@ import { ApiConfig, useContext } from "@midwayjs/hooks-core";
 import { Context } from "@midwayjs/koa";
 import { useEntityModel } from "@midwayjs/orm";
 import { z } from "zod";
-import { valid } from "../../utils/tools";
 import { CreateUserSchema, DelUserSchema, EditUserSchema, FindUserSchema, UserAddGoodsSchema } from "../dto/UserDTO";
 import { Goods } from "../entity/Goods";
 import { Users } from "../entity/Users";
 import { useFindCount } from "../hooks/Pagination";
 import { useGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
+import { valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 

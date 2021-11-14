@@ -8,7 +8,7 @@ import { withController } from "@midwayjs/hooks";
 import { AuthHandle } from "../middleware/AuthHandle";
 import { Context } from "koa";
 import { useContext } from "@midwayjs/hooks-core";
-import { valid } from "../../utils/tools";
+import { valid } from "../utils/tools";
 
 const ctx = () => useContext<Context>();
 const mUser = () => useEntityModel(Users);

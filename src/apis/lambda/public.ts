@@ -2,8 +2,8 @@ import { useEntityModel } from "@midwayjs/orm";
 import { Users } from "../entity/Users";
 import { z } from "zod";
 import { UserInfoSchema } from "../dto/AuthDTO";
-import { valid } from "../../utils/tools";
 import { omit } from "lodash";
+import { valid } from "../utils/tools";
 
 const mUser = () => useEntityModel(Users);
 

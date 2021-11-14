@@ -2,7 +2,6 @@ import { ApiConfig } from "@midwayjs/hooks-core";
 import { useEntityModel } from "@midwayjs/orm";
 import dayjs from "dayjs";
 import { z } from "zod";
-import { valid } from "../../utils/tools";
 import { OrderTidSchema } from "../dto/OrderDTO";
 import { Goods } from "../entity/Goods";
 import { Orders } from "../entity/Orders";
@@ -10,6 +9,7 @@ import { Users } from "../entity/Users";
 import { useStaticTime } from "../hooks/agisoHook";
 import { useFindCount } from "../hooks/Pagination";
 import { AuthHandle } from "../middleware/AuthHandle";
+import { valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
