@@ -20,7 +20,7 @@ export const income_about = async () => {
   const newUsers = await mUsers()
     .createQueryBuilder("user")
     .where("user.createAt LIKE :createAt", { createAt: `%${toDay}%` })
-    .where("user.isAdmin = 0")
+    .andWhere("user.isAdmin = 0")
     .getMany();
   const newOrder = orders.filter((item) => item.status === 2);
   const newRefund = orders.filter((item) => item.status === -1);

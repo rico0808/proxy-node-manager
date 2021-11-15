@@ -33,7 +33,7 @@ export const node_info = async () => {
 export const valid_user_list = async () => {
   const body: z.infer<typeof ReportSign> = valid(ReportSign, ctx().request.body);
   _verifyHash(body);
-  const users = await mUsers().createQueryBuilder("user").where("user.used < user.traffic").where("user.status = 1").getMany();
+  const users = await mUsers().createQueryBuilder("user").where("user.used < user.traffic").andWhere("user.status = 1").getMany();
   const data: { [key: string]: string } = {};
   users.forEach((item) => (data[item.account] = item.passwd));
   return data;
@@ -56,6 +56,7 @@ export const report_traffic = async () => {
     user.used += used;
     await mUsers().save(user);
   }
+  node.online = data.length;
   await mNodes().save(node);
   return { msg: `#${id} 节点上报流量完毕 ${dayjs().format("YYYY-MM-DD HH:mm:ss")}` };
 };

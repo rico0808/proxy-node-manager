@@ -6,10 +6,10 @@ export const ReportSign = z.object({
 });
 
 export const ReportNodeInfo = ReportSign.extend({
-  id: z.string(),
+  id: z.number(),
 });
 
 export const ReportTrafficBody = ReportSign.extend({
-  id: z.string(),
+  id: z.number(),
   data: z.object({ account: z.string(), used: z.number() }).array(),
 });
