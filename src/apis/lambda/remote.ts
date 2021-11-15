@@ -1,0 +1,52 @@
+import { useContext } from "@midwayjs/hooks-core";
+import { useEntityModel } from "@midwayjs/orm";
+import { MD5 } from "crypto-js";
+import dayjs from "dayjs";
+import { Context } from "koa";
+import { z } from "zod";
+import { ReportSign, ReportTrafficBody } from "../dto/RemoteDTO";
+import { Nodes } from "../entity/Nodes";
+import { Users } from "../entity/Users";
+import { valid } from "../utils/tools";
+
+const ctx = () => useContext<Context>();
+const mUsers = () => useEntityModel(Users);
+const mNodes = () => useEntityModel(Nodes);
+
+// 验证hash
+const _verifyHash = (body: z.infer<typeof ReportSign>) => {
+  const str = "ohUqfbWUYzQQDcLD";
+  const hash = MD5(body.time + str).toString();
+  if (hash !== body.hash) throw [400, "签名验证错误"];
+};
+
+// 获取有效用户
+export const valid_user_list = async () => {
+  const body: z.infer<typeof ReportSign> = valid(ReportSign, ctx().request.body);
+  _verifyHash(body);
+  const users = await mUsers().createQueryBuilder("user").where("user.used < user.traffic").where("user.status = 1").getMany();
+  const data: { [key: string]: string } = {};
+  users.forEach((item) => (data[item.account] = item.passwd));
+  return data;
+};
+
+// 流量上报
+export const report_traffic = async () => {
+  const body: z.infer<typeof ReportTrafficBody> = valid(ReportTrafficBody, ctx().request.body);
+  _verifyHash(body);
+  const { id, data } = body;
+
+  const node = await mNodes().findOne({ where: { id } });
+  if (!node) throw [400, `#${id} 节点不存在`];
+
+  for (let i = 0; i < data.length; i++) {
+    const { account, used } = data[i];
+    const user = await mUsers().findOne({ where: { account } });
+    node.traffic += used;
+    if (!user) continue;
+    user.used += used;
+    await mUsers().save(user);
+  }
+  await mNodes().save(node);
+  return { msg: `#${id} 节点上报流量完毕 ${dayjs().format("YYYY-MM-DD HH:mm:ss")}` };
+};
