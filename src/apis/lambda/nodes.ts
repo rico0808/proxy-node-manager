@@ -6,23 +6,27 @@ import { CreateNodeSchema, DelNodeSchema, EditNodeSchema } from "../dto/NodeDTO"
 import { Nodes } from "../entity/Nodes";
 import { useFindCount } from "../hooks/Pagination";
 import { AuthHandle } from "../middleware/AuthHandle";
-import { valid } from "../utils/tools";
+import { toGB, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
 const ctx = () => useContext<Context>();
 const mNodes = () => useEntityModel(Nodes);
 
-// id查找用户
+// id查找节点
 const _findNodeById = async (id: number) => {
-  const user = await mNodes().findOne({ where: { id } });
-  if (!user) throw [401, "节点不存在"];
-  return user;
+  const node = await mNodes().findOne({ where: { id } });
+  if (!node) throw [401, "节点不存在"];
+  return node;
 };
 
 // 节点列表
 export const node_list = async ({ page = 1, size = 15 }) => {
-  const [data, total] = await useFindCount(mNodes, {}, { page, size });
+  const [res, total] = await useFindCount(mNodes, {}, { page, size });
+  const data = res.map((item) => {
+    item.traffic = toGB(item.traffic);
+    return item;
+  });
   return { data, total };
 };
 

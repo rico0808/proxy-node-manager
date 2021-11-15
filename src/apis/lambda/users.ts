@@ -8,7 +8,7 @@ import { Users } from "../entity/Users";
 import { useFindCount } from "../hooks/Pagination";
 import { useGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
-import { valid } from "../utils/tools";
+import { toGB, toMB, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
@@ -25,7 +25,12 @@ const _findUserById = async (id: number) => {
 
 // 用户列表
 export const user_list = async ({ page = 1, size = 15 }) => {
-  const [data, total] = await useFindCount(mUser, { isAdmin: 0 }, { page, size });
+  const [res, total] = await useFindCount(mUser, { isAdmin: 0 }, { page, size });
+  const data = res.map((item) => {
+    item.traffic = toGB(item.traffic);
+    item.used = toGB(item.used);
+    return item;
+  });
   return { data, total };
 };
 
@@ -40,7 +45,7 @@ export const create_user = async (body: any) => {
   user.tb = data.account;
   user.account = data.account;
   user.passwd = data.passwd;
-  user.traffic = data.traffic;
+  user.traffic = toMB(data.traffic);
   user.expire = data.expire;
   await mUser().save(user);
   return { msg: "创建用户成功" };
@@ -60,8 +65,8 @@ export const edit_user = async (body: any) => {
   const user = await _findUserById(data.id);
   user.account = data.account;
   user.passwd = data.passwd;
-  user.used = data.used;
-  user.traffic = data.traffic;
+  user.used = toMB(data.used);
+  user.traffic = toMB(data.traffic);
   user.expire = data.expire;
   user.useTest = data.useTest;
   user.status = data.status;

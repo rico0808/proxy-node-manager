@@ -6,23 +6,27 @@ import { CreateGoodsSchema, DelGoodsSchema, EditGoodsSchema } from "../dto/Goods
 import { Goods } from "../entity/Goods";
 import { useFindCount } from "../hooks/Pagination";
 import { AuthHandle } from "../middleware/AuthHandle";
-import { valid } from "../utils/tools";
+import { toGB, toMB, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
 const ctx = () => useContext<Context>();
 const mGoods = () => useEntityModel(Goods);
 
-// id查找用户
+// id查找
 const _findGoodsById = async (id: number) => {
-  const user = await mGoods().findOne({ where: { id } });
-  if (!user) throw [401, "节点不存在"];
-  return user;
+  const goods = await mGoods().findOne({ where: { id } });
+  if (!goods) throw [401, "节点不存在"];
+  return goods;
 };
 
-// 节点列表
+// 商品列表
 export const goods_list = async ({ page = 1, size = 15 }) => {
-  const [data, total] = await useFindCount(mGoods, {}, { page, size });
+  const [res, total] = await useFindCount(mGoods, {}, { page, size });
+  const data = res.map((item) => {
+    item.traffic = toGB(item.traffic);
+    return item;
+  });
   return { data, total };
 };
 
@@ -34,7 +38,7 @@ export const create_goods = async (body: any) => {
   const goods = new Goods();
   goods.name = data.name;
   goods.sku = data.sku;
-  goods.traffic = data.traffic;
+  goods.traffic = toMB(data.traffic);
   goods.days = data.days;
   await mGoods().save(goods);
   return { msg: "添加商品成功" };
@@ -54,7 +58,7 @@ export const edit_goods = async (body: any) => {
   const goods = await _findGoodsById(data.id);
   goods.name = data.name;
   goods.sku = data.sku;
-  goods.traffic = data.traffic;
+  goods.traffic = toMB(data.traffic);
   goods.days = data.days;
   goods.status = data.status;
   await mGoods().save(goods);

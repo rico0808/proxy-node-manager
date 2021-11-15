@@ -9,3 +9,6 @@ export const valid = (schema: any, body: any, required = true) => {
   if (!valid.success) throw [400, "参数不完整"];
   return schema.parse(body);
 };
+
+export const toMB = (val: number) => val * 1024;
+export const toGB = (val: number) => parseFloat((val / 1024).toFixed(2));
