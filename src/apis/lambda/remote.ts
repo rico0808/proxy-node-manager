@@ -4,7 +4,7 @@ import { MD5 } from "crypto-js";
 import dayjs from "dayjs";
 import { Context } from "koa";
 import { z } from "zod";
-import { ReportSign, ReportTrafficBody } from "../dto/RemoteDTO";
+import { ReportNodeInfo, ReportSign, ReportTrafficBody } from "../dto/RemoteDTO";
 import { Nodes } from "../entity/Nodes";
 import { Users } from "../entity/Users";
 import { valid } from "../utils/tools";
@@ -18,6 +18,15 @@ const _verifyHash = (body: z.infer<typeof ReportSign>) => {
   const str = "ohUqfbWUYzQQDcLD";
   const hash = MD5(body.time + str).toString();
   if (hash !== body.hash) throw [400, "签名验证错误"];
+};
+
+// 获取节点信息
+export const node_info = async () => {
+  const body: z.infer<typeof ReportNodeInfo> = valid(ReportNodeInfo, ctx().request.body);
+  _verifyHash(body);
+  const node = await mNodes().findOne({ where: { id: body.id } });
+  if (!node) throw [400, "节点ID不存在"];
+  return node;
 };
 
 // 获取有效用户
