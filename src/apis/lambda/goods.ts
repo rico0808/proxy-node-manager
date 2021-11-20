@@ -6,7 +6,7 @@ import { CreateGoodsSchema, DelGoodsSchema, EditGoodsSchema } from "../dto/Goods
 import { Goods } from "../entity/Goods";
 import { useFindCount } from "../hooks/Pagination";
 import { AuthHandle } from "../middleware/AuthHandle";
-import { toGB, toMB, valid } from "../utils/tools";
+import { toGB, toByte, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
@@ -38,7 +38,7 @@ export const create_goods = async (body: any) => {
   const goods = new Goods();
   goods.name = data.name;
   goods.sku = data.sku;
-  goods.traffic = toMB(data.traffic);
+  goods.traffic = toByte(data.traffic);
   goods.days = data.days;
   await mGoods().save(goods);
   return { msg: "添加商品成功" };
@@ -58,7 +58,7 @@ export const edit_goods = async (body: any) => {
   const goods = await _findGoodsById(data.id);
   goods.name = data.name;
   goods.sku = data.sku;
-  goods.traffic = toMB(data.traffic);
+  goods.traffic = toByte(data.traffic);
   goods.days = data.days;
   goods.status = data.status;
   await mGoods().save(goods);

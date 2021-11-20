@@ -15,7 +15,7 @@ export class Goods {
   @Column({ default: 0, comment: "销量" })
   sales: number;
 
-  @Column({ default: 0, comment: "流量大小" })
+  @Column({ type: "bigint", default: 0, comment: "流量大小" })
   traffic: number;
 
   @Column({ default: 30, comment: "有效天数" }) // 有效天数

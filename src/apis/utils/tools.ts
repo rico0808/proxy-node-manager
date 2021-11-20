@@ -10,5 +10,5 @@ export const valid = (schema: any, body: any, required = true) => {
   return schema.parse(body);
 };
 
-export const toMB = (val: number) => val * 1024;
-export const toGB = (val: number) => parseFloat((val / 1024).toFixed(2));
+export const toByte = (val: number) => val * 1024 * 1024 * 1024;
+export const toGB = (val: number) => parseFloat((val / 1024 / 1024 / 1024).toFixed(2));

@@ -17,7 +17,8 @@ export const useGoods = async (data: IF_UseProductData[], user: Users) => {
     // 流量充值
     const traffic = prod.traffic * num;
     const days = prod.days * num;
-    user.traffic += traffic;
+    const user_traffic = parseInt(user.traffic as any);
+    user.traffic = user_traffic + traffic;
     if (dayjs().isAfter(user.expire)) {
       user.expire = useStaticTime(dayjs().add(days, "day").toISOString());
     } else {

@@ -54,7 +54,8 @@ export const refund_order = async (body: any) => {
     const { OuterIid: sku, Num: num } = products[i];
     const good = await mGoods().findOne({ where: { sku } });
     if (!good) continue;
-    user.traffic -= good.traffic * num;
+    const user_traffic = parseInt(user.traffic as any);
+    user.traffic = user_traffic - good.traffic * num;
     user.expire = useStaticTime(
       dayjs(user.expire)
         .subtract(good.days * num, "day")

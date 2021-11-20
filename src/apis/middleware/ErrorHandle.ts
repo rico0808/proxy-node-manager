@@ -6,6 +6,8 @@ export const ErrorHandle = async (next: any) => {
   try {
     await next();
   } catch (error) {
+    console.log(error);
+
     if (Array.isArray(error)) {
       const [status, msg] = error;
       ctx.status = status || 500;
@@ -13,7 +15,6 @@ export const ErrorHandle = async (next: any) => {
     } else {
       ctx.status = 500;
       ctx.body = { msg: "服务器内部错误" };
-      console.log(error.message);
     }
   }
 };

@@ -11,9 +11,9 @@ export class Users {
   account: string;
   @Column({ length: 18, comment: "连接密码" })
   passwd: string;
-  @Column({ default: 0, comment: "总流量" })
+  @Column({ type: "bigint", default: 0, comment: "总流量" })
   traffic: number;
-  @Column({ default: 0, comment: "已用流量" })
+  @Column({ type: "bigint", default: 0, comment: "已用流量" })
   used: number;
   @Column({ type: "datetime", comment: "到期时间" })
   expire: string;

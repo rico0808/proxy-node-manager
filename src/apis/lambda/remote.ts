@@ -50,10 +50,15 @@ export const report_traffic = async () => {
 
   for (let i = 0; i < data.length; i++) {
     const { account, used } = data[i];
+    // 节点流量
+    const node_traffic = parseInt(node.traffic as any);
+    node.traffic = node_traffic + used;
+
+    // 用户流量
     const user = await mUsers().findOne({ where: { account } });
-    node.traffic += used;
     if (!user) continue;
-    user.used += used;
+    const user_traffic = parseInt(user.used as any);
+    user.used = user_traffic + used;
     await mUsers().save(user);
   }
   node.online = data.length;

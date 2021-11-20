@@ -18,7 +18,7 @@ export class Nodes {
   @Column({ default: 0, comment: "在线人数" })
   online: number;
 
-  @Column({ default: 0, comment: "消耗流量" })
+  @Column({ type: "bigint", default: 0, comment: "消耗流量" })
   traffic: number;
 
   @Column({ type: "tinyint", default: 1, comment: "状态" })

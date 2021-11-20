@@ -8,7 +8,7 @@ import { Users } from "../entity/Users";
 import { useFindCount } from "../hooks/Pagination";
 import { useGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
-import { toGB, toMB, valid } from "../utils/tools";
+import { toGB, toByte, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
@@ -45,7 +45,7 @@ export const create_user = async (body: any) => {
   user.tb = data.account;
   user.account = data.account;
   user.passwd = data.passwd;
-  user.traffic = toMB(data.traffic);
+  user.traffic = toByte(data.traffic);
   user.expire = data.expire;
   await mUser().save(user);
   return { msg: "创建用户成功" };
@@ -65,8 +65,8 @@ export const edit_user = async (body: any) => {
   const user = await _findUserById(data.id);
   user.account = data.account;
   user.passwd = data.passwd;
-  user.used = toMB(data.used);
-  user.traffic = toMB(data.traffic);
+  user.used = toByte(data.used);
+  user.traffic = toByte(data.traffic);
   user.expire = data.expire;
   user.useTest = data.useTest;
   user.status = data.status;
