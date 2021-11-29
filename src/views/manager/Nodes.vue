@@ -12,7 +12,9 @@
     @change="onTableChange"
   >
     <template #traffic="{ record }">{{ record.traffic }} GB</template>
-    <template #updateAt="{ record }">{{ fTime(record.updateAt, true) }}</template>
+    <template #report="{ record }">
+      <a-tag class="m-0" :color="reportStatus(record.report).type">{{ reportStatus(record.report).text }}</a-tag>
+    </template>
     <template #status="{ record }">
       <a-tag class="m-0" :color="record.status ? 'success' : 'error'">{{ record.status ? "启用" : "禁用" }}</a-tag>
     </template>
@@ -60,6 +62,7 @@
   import { z } from "zod";
   import { clear_node_traffic, create_node, delete_node, edit_node, node_list } from "../../apis/lambda/nodes";
   import { EditGoodsSchema } from "../../apis/dto/GoodsDTO";
+  import dayjs from "dayjs";
 
   const fTime = formatTime;
   const columns = [
@@ -69,7 +72,7 @@
     { title: "端口", dataIndex: "port", align: "center" },
     { title: "已跑流量", slots: { customRender: "traffic" } },
     { title: "在线人数", dataIndex: "online", align: "center" },
-    { title: "最后在线", slots: { customRender: "updateAt" }, align: "center" },
+    { title: "最后在线", slots: { customRender: "report" }, align: "center" },
     { title: "状态", slots: { customRender: "status" }, align: "center" },
     { title: "操作项", slots: { customRender: "actions" }, width: "250px", align: "center" },
   ];
@@ -80,6 +83,15 @@
     submiting: false,
   });
   const modelTitle = computed(() => (state.isEdit ? "编辑节点" : "添加节点"));
+
+  // 在线状态
+  const reportStatus = (time: string) => {
+    if (dayjs(time).isAfter(dayjs().subtract(1, "minute").toISOString())) {
+      return { type: "success", text: fTime(time, true) };
+    } else {
+      return { type: "error", text: fTime(time, true) };
+    }
+  };
 
   const formRef = ref();
   const baseFm = { name: "", ddns: "", port: "", status: 1 };
