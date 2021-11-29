@@ -1,9 +1,9 @@
 export const orm = {
   type: "mysql",
-  host: "116.62.149.125",
+  host: "101.43.14.110",
   port: 4400,
   username: "nsns",
-  password: "5LzJ3dbPkd6mNHEA",
+  password: "aEReh7ZjtkcJjL2n",
   database: "nsns",
   synchronize: true,
   logging: false,

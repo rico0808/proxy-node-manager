@@ -28,7 +28,7 @@
   <a-modal :title="modelTitle" :visible="state.visible" @cancel="onModelClose" :maskClosable="false" width="400px">
     <a-form ref="formRef" :model="formData" :rules="rules" hideRequiredMark>
       <a-form-item label="商品名称" name="name">
-        <a-input v-model:value.trim="formData.name" placeholder="请输入节点名称" />
+        <a-input v-model:value.trim="formData.name" placeholder="请输入商品名称" />
       </a-form-item>
       <a-form-item label="商品SKU" name="sku">
         <a-input v-model:value.trim="formData.sku" placeholder="请输入商品SKU" />
@@ -85,7 +85,7 @@
     isEdit: false,
     submiting: false,
   });
-  const modelTitle = computed(() => (state.isEdit ? "编辑节点" : "添加节点"));
+  const modelTitle = computed(() => (state.isEdit ? "编辑商品" : "添加商品"));
 
   const formRef = ref();
   const baseFm = { name: "", sku: "", traffic: 0, days: 0, status: 1 };

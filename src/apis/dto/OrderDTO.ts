@@ -4,7 +4,7 @@ export const OrderSchema = z.object({
   buyTime: z.string().nonempty(),
   createAt: z.string().nonempty(),
   id: z.number(),
-  payment: z.number(),
+  payment: z.string().nonempty(),
   product: z.any(),
   source: z.string().nonempty(),
   status: z.number(),

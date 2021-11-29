@@ -62,6 +62,7 @@ export const report_traffic = async () => {
     await mUsers().save(user);
   }
   node.online = data.length;
+  node.report = new Date().toISOString();
   await mNodes().save(node);
   return { msg: `#${id} 节点上报流量完毕 ${dayjs().format("YYYY-MM-DD HH:mm:ss")}` };
 };

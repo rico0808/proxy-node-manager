@@ -11,6 +11,7 @@ import { useGoods } from "../hooks/userHook";
 import { AgisoBodySchema, AgisoQuerySchema } from "../dto/AgisoDTO";
 import { z } from "zod";
 import { formatTime, valid } from "../utils/tools";
+import dayjs from "dayjs";
 
 const ctx = () => useContext<Context>();
 const mOrder = () => useEntityModel(Orders);
@@ -51,7 +52,9 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
     }
 
     // 获取负载最小节点
-    const node = await mNodes().findOne({ order: { online: "ASC" } });
+    const nodeRes = await mNodes().find({ order: { online: "ASC" } });
+    const time = dayjs().subtract(1, "minute").toISOString();
+    const node = nodeRes.filter((item) => dayjs(item.report).isAfter(time))[0];
     if (!node) throw [500, `未找到任何可用节点，订单编号：${data.TidStr}`];
 
     // 获取订单产品

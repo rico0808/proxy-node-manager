@@ -84,6 +84,8 @@ export const find_user = async (body: any) => {
     ],
   });
   if (!user) throw [400, "用户不存在"];
+  user.used = toGB(user.used);
+  user.traffic = toGB(user.traffic);
   return user;
 };
 

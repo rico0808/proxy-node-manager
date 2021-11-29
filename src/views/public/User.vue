@@ -5,13 +5,16 @@
       class="absolute left-6 bg-gray-50 px-4 py-2 rounded-full shadow-md"
       @click="handleBack"
     />
-    <div>火山云服</div>
+    <div class="logo">
+      <span class="icon">🌋</span>
+      火山电玩
+    </div>
   </header>
   <main class="mx-8">
     <div v-if="!state.userInfo">
       <div class="text-2xl mb-12 mt-24">
         <span class="text-gray-800 block">欢迎 👏🏻</span>
-        <span class="text-gray-400 text-xl">火山云服流量查询。</span>
+        <span class="text-gray-400 text-xl">火山电玩流量查询。</span>
       </div>
       <div class="flex flex-col">
         <span class="text-gray-400">连接账号 / 淘宝账号</span>
@@ -34,11 +37,11 @@
         </div>
         <div class="item">
           <span>已用流量</span>
-          <span>{{ (state.userInfo.used / 1024).toFixed(2) }} GB</span>
+          <span>{{ state.userInfo.used }} GB</span>
         </div>
         <div class="item">
           <span>总流量</span>
-          <span>{{ (state.userInfo.traffic / 1024).toFixed(2) }} GB</span>
+          <span>{{ state.userInfo.traffic }} GB</span>
         </div>
         <div class="item">
           <span>过期时间</span>
@@ -119,6 +122,12 @@
     border-end-end-radius: 30px;
     background: hsl(47, 89%, 78%);
     min-height: 100px;
+    .logo {
+      @apply py-2 px-6 rounded-full;
+      background: #1f2937;
+      font-size: 20px;
+      color: #fff;
+    }
   }
 
   .in-account {

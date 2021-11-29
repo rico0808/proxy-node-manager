@@ -24,6 +24,9 @@ export class Nodes {
   @Column({ type: "tinyint", default: 1, comment: "状态" })
   status: number;
 
+  @Column({ type: "datetime", comment: "最后在线" })
+  report: string;
+
   @CreateDateColumn({ type: "datetime" })
   createAt: string;
   @UpdateDateColumn({ type: "datetime" })
