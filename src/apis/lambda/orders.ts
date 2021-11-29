@@ -1,4 +1,4 @@
-import { ApiConfig, useConfig } from "@midwayjs/hooks-core";
+import { ApiConfig } from "@midwayjs/hooks-core";
 import { useEntityModel } from "@midwayjs/orm";
 import dayjs from "dayjs";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
 import { useStaticTime } from "../hooks/agisoHook";
 import { useFindCount } from "../hooks/Pagination";
+import { useRefundGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
 import { valid } from "../utils/tools";
 
@@ -16,7 +17,6 @@ export const config: ApiConfig = { middleware: [AuthHandle] };
 const mOrders = () => useEntityModel(Orders);
 const mUsers = () => useEntityModel(Users);
 const mGoods = () => useEntityModel(Goods);
-const testGoods = () => useConfig("testGoods");
 
 const _findOrderByTid = async (body: any) => {
   const data: z.infer<typeof OrderTidSchema> = valid(OrderTidSchema, body);
@@ -49,22 +49,9 @@ export const refund_order = async (body: any) => {
   const user = await mUsers().findOne({ tb: order.tb });
   if (!user) throw [400, "用户已被删除"];
 
-  // 清空订单流量
-  const products: [{ OuterIid: string; Num: number }] = JSON.parse(order.product);
-  for (let i = 0; i < products.length; i++) {
-    const { OuterIid: sku, Num: num } = products[i];
-    const good = await mGoods().findOne({ where: { sku } });
-    if (!good) continue;
-    const user_traffic = parseInt(user.traffic as any);
-    user.traffic = user_traffic - good.traffic * num;
-    user.expire = useStaticTime(
-      dayjs(user.expire)
-        .subtract(good.days * num, "day")
-        .toISOString()
-    );
-    if (sku === testGoods()) user.useTest = 0;
-  }
-  await mUsers().save(user);
+  const refundGoods = JSON.parse(order.product).map((item) => ({ sku: item.OuterIid, num: item.Num }));
+  await useRefundGoods(refundGoods, user);
+
   order.status = -1;
   await mOrders().save(order);
   return { msg: "订单退款完成", status: order.status };

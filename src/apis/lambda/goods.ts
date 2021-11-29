@@ -1,5 +1,4 @@
-import { ApiConfig, useContext } from "@midwayjs/hooks-core";
-import { Context } from "@midwayjs/koa";
+import { ApiConfig } from "@midwayjs/hooks-core";
 import { useEntityModel } from "@midwayjs/orm";
 import { z } from "zod";
 import { CreateGoodsSchema, DelGoodsSchema, EditGoodsSchema } from "../dto/GoodsDTO";
@@ -10,7 +9,6 @@ import { toGB, toByte, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
-const ctx = () => useContext<Context>();
 const mGoods = () => useEntityModel(Goods);
 
 // id查找
