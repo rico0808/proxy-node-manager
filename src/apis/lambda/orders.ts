@@ -1,4 +1,4 @@
-import { ApiConfig } from "@midwayjs/hooks-core";
+import { ApiConfig, useConfig } from "@midwayjs/hooks-core";
 import { useEntityModel } from "@midwayjs/orm";
 import dayjs from "dayjs";
 import { z } from "zod";
@@ -16,6 +16,7 @@ export const config: ApiConfig = { middleware: [AuthHandle] };
 const mOrders = () => useEntityModel(Orders);
 const mUsers = () => useEntityModel(Users);
 const mGoods = () => useEntityModel(Goods);
+const testGoods = () => useConfig("testGoods");
 
 const _findOrderByTid = async (body: any) => {
   const data: z.infer<typeof OrderTidSchema> = valid(OrderTidSchema, body);
@@ -61,8 +62,9 @@ export const refund_order = async (body: any) => {
         .subtract(good.days * num, "day")
         .toISOString()
     );
-    await mUsers().save(user);
+    if (sku === testGoods()) user.useTest = 0;
   }
+  await mUsers().save(user);
   order.status = -1;
   await mOrders().save(order);
   return { msg: "订单退款完成", status: order.status };

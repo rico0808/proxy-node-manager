@@ -18,4 +18,4 @@ export const agisoToken = "TbAldsv4b6rxc57sm5ynvc4ef3c9kvg7fcavk4zee68egdy4nw";
 export const agisoSecret = "5b5c7dymubmmp7etg9yd24ud5de46khs";
 
 // 测试商品sku
-export const testGoods = "100001";
+export const testGoods = "001000";
