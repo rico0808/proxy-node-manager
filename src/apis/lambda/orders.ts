@@ -1,9 +1,7 @@
 import { ApiConfig } from "@midwayjs/hooks-core";
 import { useEntityModel } from "@midwayjs/orm";
-import dayjs from "dayjs";
 import { z } from "zod";
 import { OrderTidSchema } from "../dto/OrderDTO";
-import { Goods } from "../entity/Goods";
 import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
 import { useFindCount } from "../hooks/Pagination";

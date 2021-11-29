@@ -10,6 +10,7 @@ const mGoods = () => useEntityModel(Goods);
 const mUsers = () => useEntityModel(Users);
 const testGoods = () => useConfig("testGoods");
 
+// 充值Hooks
 export const useGoods = async (data: IF_UseProductData[], user: Users) => {
   for (let i = 0; i < data.length; i++) {
     const { sku, num } = data[i];
@@ -34,6 +35,7 @@ export const useGoods = async (data: IF_UseProductData[], user: Users) => {
   return await mUsers().save(user);
 };
 
+// 退款hooks
 export const useRefundGoods = async (data: IF_UseProductData[], user: Users) => {
   for (let i = 0; i < data.length; i++) {
     const { sku, num } = data[i];
