@@ -6,17 +6,16 @@ import { IF_AgisoBodyOrder } from "../interface";
 import { useEntityModel } from "@midwayjs/orm";
 import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
-import { Nodes } from "../entity/Nodes";
 import { useGoods } from "../hooks/userHook";
 import { AgisoBodySchema, AgisoQuerySchema } from "../dto/AgisoDTO";
 import { z } from "zod";
 import { formatTime, valid } from "../utils/tools";
-import dayjs from "dayjs";
+import { useFreeNode } from "../hooks/useNode";
 
 const ctx = () => useContext<Context>();
 const mOrder = () => useEntityModel(Orders);
 const mUsers = () => useEntityModel(Users);
-const mNodes = () => useEntityModel(Nodes);
+
 const mOrders = () => useEntityModel(Orders);
 const config = () => useConfig();
 
@@ -52,9 +51,7 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
     }
 
     // 获取负载最小节点
-    const nodeRes = await mNodes().find({ order: { online: "ASC" } });
-    const time = dayjs().subtract(1, "minute").toISOString();
-    const node = nodeRes.filter((item) => dayjs(item.report).isAfter(time))[0];
+    const node = await useFreeNode();
     if (!node) throw [500, `未找到任何可用节点，订单编号：${data.TidStr}`];
 
     // 获取订单产品
@@ -77,7 +74,6 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
       await mUsers().save(user);
     }
 
-    // todo
     user = await useGoods(prods, user);
 
     // 创建订单

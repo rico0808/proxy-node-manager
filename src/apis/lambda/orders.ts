@@ -6,7 +6,6 @@ import { OrderTidSchema } from "../dto/OrderDTO";
 import { Goods } from "../entity/Goods";
 import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
-import { useStaticTime } from "../hooks/agisoHook";
 import { useFindCount } from "../hooks/Pagination";
 import { useRefundGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
@@ -16,7 +15,6 @@ export const config: ApiConfig = { middleware: [AuthHandle] };
 
 const mOrders = () => useEntityModel(Orders);
 const mUsers = () => useEntityModel(Users);
-const mGoods = () => useEntityModel(Goods);
 
 const _findOrderByTid = async (body: any) => {
   const data: z.infer<typeof OrderTidSchema> = valid(OrderTidSchema, body);
