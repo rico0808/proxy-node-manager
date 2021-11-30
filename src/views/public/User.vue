@@ -29,11 +29,17 @@
       <div>
         <div class="item">
           <span>连接账号</span>
-          <span>{{ state.userInfo.account }}</span>
+          <div class="flex items-center" @click="handleChange('账号')">
+            <span>{{ state.userInfo.account }}</span>
+            <EditOutlined class="ml-2" />
+          </div>
         </div>
         <div class="item">
           <span>连接密码</span>
-          <span>{{ state.userInfo.passwd }}</span>
+          <div class="flex items-center" @click="handleChange('密码')">
+            <span>{{ state.userInfo.passwd }}</span>
+            <EditOutlined class="ml-2" />
+          </div>
         </div>
         <div class="item">
           <span>已用流量</span>
@@ -54,6 +60,13 @@
       </div>
       <div class="refresh" @click="handleSubmit">刷新</div>
     </div>
+
+    <a-modal v-model:visible="modal.visible" :title="`修改${modal.type}`" destroyOnClose>
+      <a-input v-model:value.trim="modal.value" :placeholder="`请输入新的连接${modal.type}`" />
+      <template #footer>
+        <a-button :loading="modal.loading" @click="handleSubmitChange">确认修改</a-button>
+      </template>
+    </a-modal>
   </main>
 </template>
 
@@ -64,12 +77,12 @@
   import { useRoute, useRouter } from "vue-router";
   import { z } from "zod";
   import { UserSchema } from "../../apis/dto/UserDTO";
-  import { pb_user_info } from "../../apis/lambda/public";
+  import { pb_edit, pb_user_info } from "../../apis/lambda/public";
   import { formatTime } from "../../utils/tools";
-  import { VerticalRightOutlined } from "@ant-design/icons-vue";
+  import { VerticalRightOutlined, EditOutlined } from "@ant-design/icons-vue";
 
   export default defineComponent({
-    components: { VerticalRightOutlined },
+    components: { VerticalRightOutlined, EditOutlined },
     setup() {
       const route = useRoute();
       const router = useRouter();
@@ -77,6 +90,13 @@
         account: "",
         notice: ref(),
         userInfo: ref<z.infer<typeof UserSchema>>(null),
+      });
+
+      const modal = reactive({
+        visible: false,
+        type: "账号",
+        value: "",
+        loading: false,
       });
 
       onMounted(() => {
@@ -110,7 +130,29 @@
         router.push("/");
       };
 
-      return { state, isExpire, handleSubmit, formatTime, handleBack };
+      // 修改账号
+      const handleChange = (type: string) => {
+        modal.visible = true;
+        modal.type = type;
+      };
+
+      // 提交修改
+      const handleSubmitChange = async () => {
+        if (!modal.value) return message.warning("请输入新的连接" + modal.type);
+        const data = { account: state.userInfo.account };
+        const payload = modal.type === "账号" ? { ...data, newAccount: modal.value } : { ...data, newPasswd: modal.value };
+        const { msg } = await pb_edit(payload);
+        message.success(msg || "修改成功");
+        modal.visible = false;
+        if (modal.type === "账号") {
+          router.push({ path: "/", query: { ac: modal.value } });
+          state.account = modal.value;
+        }
+        modal.value = "";
+        handleSubmit();
+      };
+
+      return { state, modal, isExpire, handleSubmit, formatTime, handleBack, handleChange, handleSubmitChange };
     },
   });
 </script>
