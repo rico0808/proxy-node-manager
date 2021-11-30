@@ -7,6 +7,7 @@
         <a-menu-item key="/manager/users"> <usergroup-delete-outlined /><span>用户列表</span> </a-menu-item>
         <a-menu-item key="/manager/nodes"> <node-collapse-outlined /><span>节点列表</span> </a-menu-item>
         <a-menu-item key="/manager/goods"> <star-outlined /><span>商品管理</span> </a-menu-item>
+        <a-menu-item key="/manager/notices"> <branches-outlined /><span>公告管理</span> </a-menu-item>
         <a-menu-item key="/manager/orders"> <branches-outlined /><span>订单记录</span> </a-menu-item>
       </a-menu>
     </a-layout-sider>

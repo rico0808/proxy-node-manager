@@ -10,7 +10,6 @@ import { toGB, valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
-const ctx = () => useContext<Context>();
 const mNodes = () => useEntityModel(Nodes);
 
 // id查找节点

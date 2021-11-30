@@ -4,8 +4,10 @@ import { z } from "zod";
 import { UserEditAccountSchema, UserInfoSchema } from "../dto/AuthDTO";
 import { omit } from "lodash";
 import { toGB, valid } from "../utils/tools";
+import { Notices } from "../entity/Notices";
 
 const mUser = () => useEntityModel(Users);
+const mNotice = () => useEntityModel(Notices);
 
 export const pb_user_info = async (body: z.infer<typeof UserInfoSchema>) => {
   const data: z.infer<typeof UserInfoSchema> = valid(UserInfoSchema, body);
@@ -29,4 +31,10 @@ export const pb_edit = async (body: z.infer<typeof UserEditAccountSchema>) => {
   if (data.newPasswd) user.passwd = data.newPasswd;
   await mUser().save(user);
   return { msg: "修改成功" };
+};
+
+// 获取最新一个公告
+export const pb_new_notice = async () => {
+  const data = await mNotice().findOne({ order: { id: "ASC" }, where: { status: 1 } });
+  return data || {};
 };

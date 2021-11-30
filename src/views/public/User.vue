@@ -23,9 +23,17 @@
       </div>
     </div>
     <div v-else :class="{ 'mt-16': !state.notice }">
-      <!-- <div v-if="state.notice" class="my-6">
-        <a-alert :title="state.notice.title" :type="state.notice.level"> {{ state.notice.text }} </a-alert>
-      </div> -->
+      <div v-if="state.notice" class="my-6">
+        <a-alert
+          class="notice"
+          :message="state.notice.title"
+          :description="state.notice.content"
+          :type="state.notice.type"
+          show-icon
+        >
+          <template #icon><NotificationOutlined /></template>
+        </a-alert>
+      </div>
       <div>
         <div class="item">
           <span>连接账号</span>
@@ -77,12 +85,13 @@
   import { useRoute, useRouter } from "vue-router";
   import { z } from "zod";
   import { UserSchema } from "../../apis/dto/UserDTO";
-  import { pb_edit, pb_user_info } from "../../apis/lambda/public";
+  import { pb_edit, pb_new_notice, pb_user_info } from "../../apis/lambda/public";
   import { formatTime } from "../../utils/tools";
-  import { VerticalRightOutlined, EditOutlined } from "@ant-design/icons-vue";
+  import { VerticalRightOutlined, EditOutlined, NotificationOutlined } from "@ant-design/icons-vue";
+  import { isEmpty } from "lodash";
 
   export default defineComponent({
-    components: { VerticalRightOutlined, EditOutlined },
+    components: { VerticalRightOutlined, EditOutlined, NotificationOutlined },
     setup() {
       const route = useRoute();
       const router = useRouter();
@@ -105,6 +114,7 @@
           state.account = ac as string;
           handleSubmit();
         }
+        getNewNotice();
       });
 
       // 是否过期
@@ -121,6 +131,7 @@
           return message.error("该账号异常或已被禁用");
         }
         state.userInfo = user;
+        router.push({ path: "/", query: { ac: state.account } });
       };
 
       // 回退
@@ -150,6 +161,13 @@
         }
         modal.value = "";
         handleSubmit();
+      };
+
+      // 获取最新公告
+      const getNewNotice = async () => {
+        console.log(11);
+        const data = await pb_new_notice();
+        state.notice = isEmpty(data) ? null : data;
       };
 
       return { state, modal, isExpire, handleSubmit, formatTime, handleBack, handleChange, handleSubmitChange };
@@ -191,5 +209,9 @@
     max-width: 90px;
     font-size: 14px;
     background: hsl(47, 89%, 78%);
+  }
+
+  .notice {
+    @apply p-2;
   }
 </style>
