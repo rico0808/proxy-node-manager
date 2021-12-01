@@ -114,13 +114,13 @@
   const noticeType = (type: string) => {
     switch (type) {
       case "info":
-        return { type, label: "蓝色通知" };
+        return { type: "blue", label: "蓝色通知" };
       case "warning":
-        return { type, label: "黄色通知" };
+        return { type: "orange", label: "黄色通知" };
       case "success":
-        return { type, label: "绿色通知" };
+        return { type: "green", label: "绿色通知" };
       case "error":
-        return { type, label: "共色通知" };
+        return { type: "red", label: "红色通知" };
     }
   };
 

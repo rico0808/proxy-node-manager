@@ -12,11 +12,17 @@
     @change="onTableChange"
   >
     <template #used="{ record }">{{ record.used }} GB</template>
+
     <template #traffic="{ record }">{{ record.traffic }} GB</template>
+
     <template #expire="{ record }">{{ fTime(record.expire) }}</template>
+
+    <template #updateAt="{ record }">{{ fTime(record.updateAt, true) }}</template>
+
     <template #status="{ record }">
       <a-tag class="m-0" :color="record.status ? 'success' : 'error'">{{ record.status ? "启用" : "禁用" }}</a-tag>
     </template>
+
     <template #actions="{ record }">
       <a-button type="primary" size="small" class="mr-2" @click="onEditUser(record)">编辑</a-button>
       <a-popconfirm title="确认删除该用户吗？" ok-text="确认" cancel-text="取消" @confirm="onDeleteUser(record.id)">
@@ -96,6 +102,7 @@
     { title: "已用流量", slots: { customRender: "used" }, align: "center" },
     { title: "预设流量", slots: { customRender: "traffic" }, align: "center" },
     { title: "到期时间", slots: { customRender: "expire" }, align: "center" },
+    { title: "最近使用", slots: { customRender: "updateAt" }, align: "center" },
     { title: "状态", slots: { customRender: "status" }, align: "center" },
     { title: "操作项", slots: { customRender: "actions" }, width: "140px", align: "center" },
   ];

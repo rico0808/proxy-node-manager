@@ -19,3 +19,6 @@ export const agisoSecret = "5b5c7dymubmmp7etg9yd24ud5de46khs";
 
 // 测试商品sku
 export const testGoods = "001000";
+
+// 网站url，不用带末尾 /
+export const webUrl = "http://101.43.14.110";

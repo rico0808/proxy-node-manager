@@ -102,7 +102,8 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
       .replace("{ip}", node.ddns)
       .replace("{port}", node.port.toString())
       .replace("{account}", account)
-      .replace("{passwd}", passwd);
+      .replace("{passwd}", passwd)
+      .replace("{url}", config().webUrl + "/?ac=" + account);
 
     return _sendAliwwMsg(true, AliwwMsg, Memo);
   } catch (error) {
