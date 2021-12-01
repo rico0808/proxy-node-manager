@@ -11,6 +11,7 @@ import { AgisoBodySchema, AgisoQuerySchema } from "../dto/AgisoDTO";
 import { z } from "zod";
 import { formatTime, valid } from "../utils/tools";
 import { useFreeNode } from "../hooks/useNode";
+import dayjs from "dayjs";
 
 const ctx = () => useContext<Context>();
 const mOrder = () => useEntityModel(Orders);
@@ -71,6 +72,7 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
       }
       // 改变试用状态
       user.useTest = 1;
+      user.testTime = dayjs().toISOString();
       await mUsers().save(user);
     }
 

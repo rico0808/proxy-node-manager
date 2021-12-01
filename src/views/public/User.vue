@@ -63,7 +63,7 @@
         </div>
         <div class="item">
           <span>最新使用</span>
-          <span>{{ formatTime(state.userInfo.updateAt, true) }}</span>
+          <span>{{ state.userInfo.lastUse ? formatTime(state.userInfo.lastUse, true) : "从未使用" }}</span>
         </div>
       </div>
       <div class="refresh" @click="handleSubmit">刷新</div>

@@ -17,10 +17,13 @@
 
     <template #expire="{ record }">{{ fTime(record.expire) }}</template>
 
-    <template #updateAt="{ record }">{{ fTime(record.updateAt, true) }}</template>
+    <template #lastUse="{ record }">{{ record.lastUse ? fTime(record.lastUse, true) : "从未使用" }}</template>
 
     <template #status="{ record }">
-      <a-tag class="m-0" :color="record.status ? 'success' : 'error'">{{ record.status ? "启用" : "禁用" }}</a-tag>
+      <a-tag v-if="record.status === 0" class="m-0" color="error">禁用</a-tag>
+      <a-tag v-else-if="isExpire(record.expire)" class="m-0" color="error">已过期</a-tag>
+      <a-tag v-else-if="record.used >= record.traffic" class="m-0" color="warning">流量超限</a-tag>
+      <a-tag v-else class="m-0" color="success">正常</a-tag>
     </template>
 
     <template #actions="{ record }">
@@ -102,7 +105,7 @@
     { title: "已用流量", slots: { customRender: "used" }, align: "center" },
     { title: "预设流量", slots: { customRender: "traffic" }, align: "center" },
     { title: "到期时间", slots: { customRender: "expire" }, align: "center" },
-    { title: "最近使用", slots: { customRender: "updateAt" }, align: "center" },
+    { title: "最近使用", slots: { customRender: "lastUse" }, align: "center" },
     { title: "状态", slots: { customRender: "status" }, align: "center" },
     { title: "操作项", slots: { customRender: "actions" }, width: "140px", align: "center" },
   ];
@@ -133,6 +136,9 @@
     passwd: [{ required: true, message: "请输入连接密码", trigger: "blur" }],
     expire: [{ required: true, message: "请输入到期时间", trigger: "blur" }],
   };
+
+  // 是否过期
+  const isExpire = (expire: string) => dayjs().isAfter(expire);
 
   // 请求
   const { total, data, current, pageSize, loading, reload, run } = usePagination(user_list, {
