@@ -62,7 +62,7 @@ const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
     if (!node) throw [500, `未找到任何可用节点，订单编号：${data.TidStr}`];
 
     // 获取订单产品
-    const prods = data.Orders.map((item) => ({ sku: item.OuterSkuId || item.OuterIid, num: item.Num }));
+    const prods = data.Orders.map((item) => ({ sku: item.OuterSkuId, num: item.Num }));
     if (!prods) return _sendAliwwMsg(false, `订单号：${data.TidStr}\n亲亲，该产品未在库存中找到，请联系客服手动补货。`);
 
     // 判断是否试用
@@ -137,7 +137,7 @@ const _RefundSuccess = async (data: IF_AgisoBodyOrder) => {
   if (!user) throw [400, "用户已被删除"];
 
   // 扣除订单对应套餐
-  const refundGoods = JSON.parse(order.product).map((item) => ({ sku: item.OuterIid, num: item.Num }));
+  const refundGoods = JSON.parse(order.product).map((item) => ({ sku: item.OuterSkuId, num: item.Num }));
   await useRefundGoods(refundGoods, user);
 
   // 更改订单状态
