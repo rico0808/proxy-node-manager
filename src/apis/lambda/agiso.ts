@@ -6,7 +6,7 @@ import { IF_AgisoBodyOrder } from "../interface";
 import { useEntityModel } from "@midwayjs/orm";
 import { Orders } from "../entity/Orders";
 import { Users } from "../entity/Users";
-import { useGoods } from "../hooks/userHook";
+import { useGoods, useRefundGoods } from "../hooks/userHook";
 import { AgisoBodySchema, AgisoQuerySchema } from "../dto/AgisoDTO";
 import { z } from "zod";
 import { formatTime, valid } from "../utils/tools";
@@ -29,16 +29,22 @@ export const cb = async () => {
   // 验签
   const verify = await useVerifySign(query, body);
   if (!verify) throw [400, "签名错误"];
-  if (query.aopic === "2") return _paymentSuccess(data);
+
+  // 买家付款成功
+  if (query.aopic === "2") return _PaymentSuccess(data);
+  // 发货成功
+  if (query.aopic === "2048") return _SendOutSuccess(data);
+  // 退款成功
+  if (query.aopic === "65536") return _RefundSuccess(data);
 };
 
 // 订单付款
-const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
+const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
   try {
     // 查找订单
     let order = await mOrder().findOne({ where: { tid: data.TidStr } });
     // 防止重复推送
-    if (order) if (order.status === 2) return { msg: "订单通知重复推送" };
+    if (order) if (order.status === 2) throw [400, "订单通知重复推送"];
 
     // 查找用户
     let user = await mUsers().findOne({ where: { tb: data.BuyerNick } });
@@ -92,13 +98,9 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
       await mOrders().save(order);
     }
 
-    // 更改订单状态
-    order.status = 2;
-    mOrders().save(order);
-
     // 返回
     const { account, passwd, expire } = user;
-    const Memo = `连接账号：${account} / 连接密码：${passwd} / 到期时间：${formatTime(expire)})}`;
+    const Memo = `连接账号：${account} / 连接密码：${passwd} / 到期时间：${formatTime(expire)}`;
     const AliwwMsg = useWwMsg()
       .replace("{tid}", order.tid)
       .replace("{ip}", node.ddns)
@@ -113,6 +115,38 @@ const _paymentSuccess = async (data: IF_AgisoBodyOrder) => {
     _sendFailMessage("亲亲，自动发货失败了，请联系客服进行处理。", data.TidStr);
     throw [500, `执行自动发货出错 ${error.message}`];
   }
+};
+
+// 自动发货成功
+const _SendOutSuccess = async (data: IF_AgisoBodyOrder) => {
+  const order = await mOrder().findOne({ where: { tid: data.TidStr } });
+  if (!order) throw [400, "未找到订单"];
+  // 更改订单状态
+  order.status = 2;
+  mOrders().save(order);
+  return { msg: "自动发货成功" };
+};
+
+// 用户退款成功
+const _RefundSuccess = async (data: IF_AgisoBodyOrder) => {
+  const order = await mOrder().findOne({ where: { tid: data.TidStr } });
+  if (!order) throw [400, "未找到订单"];
+  if (order.status === -1) throw [400, "订单已退款"];
+
+  const user = await mUsers().findOne({ tb: order.tb });
+  if (!user) throw [400, "用户已被删除"];
+
+  // 扣除订单对应套餐
+  const refundGoods = JSON.parse(order.product).map((item) => ({ sku: item.OuterIid, num: item.Num }));
+  await useRefundGoods(refundGoods, user);
+
+  // 更改订单状态
+  order.status = -1;
+  await mOrders().save(order);
+
+  const msg = `订单编号 ${order.tid}
+  退款成功啦亲亲~ 非常期待与您的下次相遇。`;
+  return _sendAliwwMsg(false, msg);
 };
 
 // 报错发送信息给用户

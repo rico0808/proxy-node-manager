@@ -3,16 +3,13 @@ import { useEntityModel } from "@midwayjs/orm";
 import { z } from "zod";
 import { OrderTidSchema } from "../dto/OrderDTO";
 import { Orders } from "../entity/Orders";
-import { Users } from "../entity/Users";
 import { useFindCount } from "../hooks/Pagination";
-import { useRefundGoods } from "../hooks/userHook";
 import { AuthHandle } from "../middleware/AuthHandle";
 import { valid } from "../utils/tools";
 
 export const config: ApiConfig = { middleware: [AuthHandle] };
 
 const mOrders = () => useEntityModel(Orders);
-const mUsers = () => useEntityModel(Users);
 
 const _findOrderByTid = async (body: any) => {
   const data: z.infer<typeof OrderTidSchema> = valid(OrderTidSchema, body);
@@ -37,18 +34,4 @@ export const find_order = async (body: any) => {
   //订单状态 0未知 1已付款 2已发货 -1退款
   if (order.status === 0) throw [400, "订单状态未知，无法操作"];
   return order;
-};
-
-// 订单退款
-export const refund_order = async (body: any) => {
-  const order = await _findOrderByTid(body);
-  const user = await mUsers().findOne({ tb: order.tb });
-  if (!user) throw [400, "用户已被删除"];
-
-  const refundGoods = JSON.parse(order.product).map((item) => ({ sku: item.OuterIid, num: item.Num }));
-  await useRefundGoods(refundGoods, user);
-
-  order.status = -1;
-  await mOrders().save(order);
-  return { msg: "订单退款完成", status: order.status };
 };

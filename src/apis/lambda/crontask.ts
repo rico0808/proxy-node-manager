@@ -9,6 +9,7 @@ export const loop = async () => {
   const users = await mUsers().find();
   let expireNum = 0;
   let clearTest = 0;
+  let overload = 0;
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
     // 判断过期清空流量
@@ -25,7 +26,17 @@ export const loop = async () => {
         clearTest += 1;
       }
     }
-    if (expireNum || clearTest) await mUsers().save(user);
+
+    // 判断流量超限超过7天清空有效期以及流量
+    if (user.used >= user.traffic) {
+      const before7 = dayjs().subtract(7, "day").toISOString();
+      if (dayjs(before7).isAfter(user.lastUse)) {
+        user.traffic = user.used = 0;
+        user.expire = dayjs().toISOString();
+        overload += 1;
+      }
+    }
+    if (expireNum || clearTest || overload) await mUsers().save(user);
   }
 
   return { msg: `自动任务执行成功 | 过期：${expireNum} | 重置试用：${clearTest} -->> ${dayjs().format("YYYY-MM-DD HH:mm:ss")}` };

@@ -31,12 +31,6 @@
           <a-button size="small">查看详情</a-button>
         </a-popover>
       </span>
-      <div class="flex gap-3">
-        <a-button type="primary" class="flex-1" danger :disabled="state.order.status !== 2" @click="handleRefundPayback">
-          订单退款
-        </a-button>
-        <a-button @click="onClearFind">清除查询</a-button>
-      </div>
     </div>
   </Card>
 </template>
@@ -47,7 +41,7 @@
   import { omit } from "lodash";
   import { z } from "zod";
   import { OrderSchema } from "../../../apis/dto/OrderDTO";
-  import { find_order, refund_order } from "../../../apis/lambda/orders";
+  import { find_order } from "../../../apis/lambda/orders";
   import Card from "../../../component/Card.vue";
 
   const state = reactive({
@@ -67,12 +61,5 @@
   const onClearFind = () => {
     state.order = null;
     state.tid = "";
-  };
-
-  // 确认退款
-  const handleRefundPayback = async () => {
-    const res = await refund_order({ tid: state.order.tid });
-    message.success(res.msg || "退款完成");
-    Object.assign(state.order, omit(res, ["msg"]));
   };
 </script>
