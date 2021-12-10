@@ -20,14 +20,12 @@
       </div>
     </div>
     <div class="right-layout">
-      <Payback />
       <FindUser />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import Payback from "./component/Payback.vue";
   import FindUser from "./component/FindUser.vue";
   import { onMounted, ref, reactive } from "@vue/runtime-core";
   import { income_about } from "../../apis/lambda/dashboard";
