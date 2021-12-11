@@ -48,23 +48,22 @@ export const report_traffic = async () => {
   const node = await mNodes().findOne({ where: { id } });
   if (!node) throw [400, `#${id} 节点不存在`];
 
-  if (data.length > 0) {
-    for (let i = 0; i < data.length; i++) {
-      const { account, used } = data[i];
-      // 节点流量
-      const node_traffic = parseInt(node.traffic as any);
-      node.traffic = node_traffic + used;
+  for (let i = 0; i < data.length; i++) {
+    const { account, used } = data[i];
+    // 节点流量
+    const node_traffic = parseInt(node.traffic as any);
+    node.traffic = node_traffic + used;
 
-      // 用户流量
-      const user = await mUsers().findOne({ where: { account } });
-      if (!user) continue;
-      const user_traffic = parseInt(user.used as any);
-      user.used = user_traffic + used;
-      user.lastUse = dayjs().toISOString();
-      await mUsers().save(user);
-    }
-    node.online = data.length;
+    // 用户流量
+    const user = await mUsers().findOne({ where: { account } });
+    if (!user) continue;
+    const user_traffic = parseInt(user.used as any);
+    user.used = user_traffic + used;
+    user.lastUse = dayjs().toISOString();
+    await mUsers().save(user);
   }
+
+  node.online = data.length;
   node.report = new Date().toISOString();
   await mNodes().save(node);
   return { msg: `#${id} 节点上报流量完毕 ${dayjs().format("YYYY-MM-DD HH:mm:ss")}` };
