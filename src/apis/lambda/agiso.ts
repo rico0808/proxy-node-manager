@@ -28,12 +28,10 @@ export const cb = async () => {
 
   // 验签
   const verify = await useVerifySign(query, body);
-  if (!verify) throw [400, "签名错误"];
+  if (!verify) return { msg: "签名错误" };
 
   // 买家付款成功
   if (query.aopic === "2") return _PaymentSuccess(data);
-  // 发货成功
-  if (query.aopic === "2048") return _SendOutSuccess(data);
   // 退款成功
   if (query.aopic === "65536") return _RefundSuccess(data);
 };
@@ -44,7 +42,7 @@ const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
     // 查找订单
     let order = await mOrder().findOne({ where: { tid: data.TidStr } });
     // 防止重复推送
-    if (order) if (order.status === 2) throw [400, "订单通知重复推送"];
+    if (order) if (order.status === 2) return { msg: "订单通知重复推送" };
 
     // 查找用户
     let user = await mUsers().findOne({ where: { tb: data.BuyerNick } });
@@ -59,7 +57,7 @@ const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
 
     // 获取负载最小节点
     const node = await useFreeNode();
-    if (!node) throw [500, `未找到任何可用节点，订单编号：${data.TidStr}`];
+    if (!node) return { msg: `未找到任何可用节点，订单编号：${data.TidStr}` };
 
     // 获取订单产品
     const prods = data.Orders.map((item) => ({ sku: item.OuterSkuId, num: item.Num }));
@@ -67,7 +65,7 @@ const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
 
     // 判断是否试用
     const useTest = await prods.filter((item) => item.sku === config().testGoods);
-    if (useTest || useTest.length > 0) {
+    if (useTest.length > 0) {
       // 已经试用
       if (user.useTest === 1) {
         return _sendAliwwMsg(false, `订单号：${data.TidStr}\n亲亲，您已经试用过加速器啦，无法再次试用哦。`);
@@ -97,6 +95,9 @@ const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
       order.buyTime = data.Created;
       await mOrders().save(order);
     }
+    // 更改订单状态
+    order.status = 2;
+    mOrders().save(order);
 
     // 返回
     const { account, passwd, expire } = user;
@@ -113,28 +114,18 @@ const _PaymentSuccess = async (data: IF_AgisoBodyOrder) => {
   } catch (error) {
     console.log(error);
     _sendFailMessage("亲亲，自动发货失败了，请联系客服进行处理。", data.TidStr);
-    throw [500, `执行自动发货出错 ${error.message}`];
+    return { msg: `执行自动发货出错 ${error.message}` };
   }
-};
-
-// 自动发货成功
-const _SendOutSuccess = async (data: IF_AgisoBodyOrder) => {
-  const order = await mOrder().findOne({ where: { tid: data.TidStr } });
-  if (!order) throw [400, "未找到订单"];
-  // 更改订单状态
-  order.status = 2;
-  mOrders().save(order);
-  return { msg: "自动发货成功" };
 };
 
 // 用户退款成功
 const _RefundSuccess = async (data: IF_AgisoBodyOrder) => {
   const order = await mOrder().findOne({ where: { tid: data.TidStr } });
-  if (!order) throw [400, "未找到订单"];
-  if (order.status === -1) throw [400, "订单已退款"];
+  if (!order) return { msg: "未找到订单" };
+  if (order.status === -1) return { msg: "订单已退款" };
 
   const user = await mUsers().findOne({ tb: order.tb });
-  if (!user) throw [400, "用户已被删除"];
+  if (!user) return { msg: "用户不存在" };
 
   // 扣除订单对应套餐
   const refundGoods = JSON.parse(order.product).map((item) => ({ sku: item.OuterSkuId, num: item.Num }));
@@ -144,8 +135,11 @@ const _RefundSuccess = async (data: IF_AgisoBodyOrder) => {
   order.status = -1;
   await mOrders().save(order);
 
-  const msg = `订单编号 ${order.tid}
-  退款成功啦亲亲~ 非常期待与您的下次相遇。`;
+  const msg = `*************************
+订单号：${order.tid}
+亲亲，订单退款成功啦~
+==========
+火山加速非常期待与您的下次相遇。`;
   return _sendAliwwMsg(false, msg);
 };
 
