@@ -27,7 +27,7 @@
         </div>
         <div class="flex items-center gap-2">
           <a-tag color="#6d5826">Oid：{{ item.Oid }}</a-tag>
-          <a-tag color="#108ee9">SKU：{{ item.OuterIid }}</a-tag>
+          <a-tag color="#108ee9">SKU：{{ item.OuterSkuId }}</a-tag>
           <a-tag color="#585eaa">数量：{{ item.Num }}</a-tag>
           <a-tag color="#007947">价格：{{ item.Payment }} ¥</a-tag>
         </div>
