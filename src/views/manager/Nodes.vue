@@ -86,6 +86,7 @@
 
   // 在线状态
   const reportStatus = (time: string) => {
+    if (!time) return { type: "error", text: "从未在线" };
     if (dayjs(time).isAfter(dayjs().subtract(1, "minute").toISOString())) {
       return { type: "success", text: fTime(time, true) };
     } else {
